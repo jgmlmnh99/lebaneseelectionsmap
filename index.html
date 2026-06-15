@@ -49,6 +49,7 @@ header h1{font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--accent
 .bsm{font-size:11px;cursor:pointer;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;font-family:'Syne',sans-serif;color:var(--muted);transition:all .15s}
 .bsm:hover{background:var(--input-hover);color:var(--text)}
 .bsm.red{border-color:#e24b4a44;color:#e24b4a}.bsm.red:hover{background:#e24b4a22}
+.bsm.active{border-color:#e24b4a;color:#e24b4a;background:#e24b4a18}
 
 /* Theme toggle */
 .theme-toggle{display:flex;align-items:center;gap:5px;cursor:pointer;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Syne',sans-serif;font-size:11px;transition:all .15s}
@@ -67,6 +68,18 @@ header h1{font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--accent
 /* ─── SIDEBAR ─── */
 .sidebar{width:292px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;flex-shrink:0;transition:width .28s cubic-bezier(.4,0,.2,1),opacity .2s}
 .sidebar.collapsed{width:0;opacity:0;pointer-events:none}
+
+/* ─── RESULTS PANEL (separate, left of map) ─── */
+.results-panel{width:240px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;flex-shrink:0}
+.results-panel .sb{border-bottom:none}
+.results-panel-title{padding:10px 12px 8px;border-bottom:1px solid var(--border);flex-shrink:0;position:sticky;top:0;background:var(--panel);z-index:5}
+.results-panel-title h2{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+
+/* ─── ERASE MODE BANNER ─── */
+#erase-mode-badge{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:#e24b4a;color:#fff;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;padding:7px 18px;border-radius:20px;z-index:500;pointer-events:none;display:none;box-shadow:0 4px 20px rgba(0,0,0,.4);letter-spacing:.04em;align-items:center;gap:8px}
+#erase-mode-badge.show{display:flex}
+#erase-mode-badge .erase-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:erasePulse 1.2s ease-in-out infinite}
+@keyframes erasePulse{0%,100%{opacity:1}50%{opacity:.35}}
 .sb{padding:10px 12px;border-bottom:1px solid var(--border)}
 .sbl{font-size:9px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:7px;font-weight:600}
 .pl{display:flex;flex-direction:column;gap:3px}
@@ -114,8 +127,8 @@ header h1{font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--accent
 #cp-toggle:hover span:nth-child(2){opacity:0;width:0}
 #cp-toggle:hover span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 /* Reopen arrow tab */
-#cp-open-tab{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:30;background:var(--accent);color:#0d1117;border:none;border-radius:0 8px 8px 0;width:24px;height:56px;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:16px;font-weight:700;box-shadow:2px 0 12px rgba(0,0,0,.3);transition:width .15s}
-#cp-open-tab:hover{width:30px}
+#cp-open-tab{position:absolute;left:0;top:0;z-index:30;background:var(--accent);color:#0d1117;border:none;border-radius:0 0 8px 0;width:40px;height:48px;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:18px;font-weight:700;box-shadow:2px 2px 12px rgba(0,0,0,.3);transition:width .15s}
+#cp-open-tab:hover{width:46px}
 #cp-open-tab.visible{display:flex}
 
 /* Light mode: black text on map */
@@ -304,6 +317,7 @@ button[title]{cursor:pointer}
     <button class="bsm" onclick="zoom(0)" title="Reset to default view">&#10227;</button>
     <button class="bsm" onclick="zoom(0.18)" title="Zoom in">&#43;</button>
     <span class="tally" id="tally">0 / 128 seats filled</span>
+    <button class="bsm" id="erase-btn" onclick="toggleErase()" title="Toggle erase mode — click seats to unassign them">&#10005; Erase mode</button>
     <button class="bsm red" onclick="clearAll()" title="Clear all seat assignments">Clear all</button>
     <button class="bsm" onclick="openExportDialog()" style="border-color:rgba(245,200,66,.4);color:var(--accent)" title="Export map as JPEG or PDF">Export</button>
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle light/dark mode">
@@ -316,9 +330,6 @@ button[title]{cursor:pointer}
 <!-- MAP PAGE -->
 <div class="page active" id="page-map">
   <div class="app">
-  <!-- Reopen sidebar arrow tab -->
-  <button id="cp-open-tab" onclick="toggleSidebar()" title="Open Control Panel">&#8250;</button>
-
   <div class="sidebar" id="sidebar">
     <div class="cp-title">
       <button id="cp-toggle" onclick="toggleSidebar()" title="Close panel">
@@ -345,7 +356,6 @@ button[title]{cursor:pointer}
           <button class="bsm" onclick="applyEditParty()" style="color:var(--accent);border-color:var(--accent)" title="Save changes to this party">Save</button>
         </div>
       </div>
-      <button class="eb" id="erase-btn" onclick="toggleErase()" title="Toggle erase mode — click seats to unassign them">&#10005; Erase mode</button>
       <div class="custom-party-form" style="margin-top:8px">
         <div class="sbl" style="margin-bottom:3px">&#43; Define New Party</div>
         <input type="text" id="new-party-name" placeholder="Party name…" maxlength="32">
@@ -354,30 +364,6 @@ button[title]{cursor:pointer}
           <span style="font-size:10px;color:var(--muted);flex:1">Choose colour</span>
           <button class="bsm" onclick="addCustomParty()" style="color:var(--accent);border-color:var(--accent)" title="Add this new party to the list">Add</button>
         </div>
-      </div>
-    </div>
-
-    <div class="sb">
-      <div class="sbl">Results</div>
-      <div class="vt">
-        <button class="vb active" id="btn-bar" onclick="setViz('bar')" title="Show results as a bar chart">Bar</button>
-        <button class="vb" id="btn-donut" onclick="setViz('donut')" title="Show results as a semi-circle chart">Semi Circle</button>
-        <button class="vb" id="btn-district" onclick="setViz('district')" title="Show results broken down by district">By District</button>
-      </div>
-      <div id="bar-view">
-        <div style="position:relative;margin-bottom:6px;margin-top:4px">
-          <div class="mlbl">65</div>
-          <div class="pw" id="pbar"><div class="mline"></div><div class="plab" id="plab">0 seats</div></div>
-        </div>
-      </div>
-      <div id="donut-view" style="display:none;flex-direction:column;align-items:center">
-        <div id="dw">
-          <svg id="donut-svg" width="220" height="122" viewBox="0 0 220 122"></svg>
-          <div id="dc"><div id="dt">0</div><div id="ds">seats</div></div>
-        </div>
-      </div>
-      <div id="district-view" style="display:none">
-        <div class="dist-results-list" id="district-results"></div>
       </div>
     </div>
 
@@ -393,7 +379,10 @@ button[title]{cursor:pointer}
       <div class="ck-list" id="ck"></div>
     </div>
   </div>
+
   <div class="map-area" id="map-area">
+    <!-- Reopen sidebar arrow tab -->
+    <button id="cp-open-tab" onclick="toggleSidebar()" title="Open Control Panel">&#8250;</button>
     <div id="copyright-bar"><span class="copy-sym" style="font-size:15px;vertical-align:middle">©</span><span style="vertical-align:middle"> Jawad Haddad 2026</span></div>
     <div class="pan-layer" id="pan-layer">
       <svg id="master-svg" xmlns="http://www.w3.org/2000/svg"
@@ -3355,6 +3344,34 @@ m128 92 c7 -7 12 -25 12 -40 0 -31 -28 -48 -76 -48 -22 0 -24 4 -24 50 l0 50
       </svg>
     </div>
   </div>
+
+  <div class="results-panel" id="results-panel">
+    <div class="results-panel-title">
+      <h2>Results</h2>
+    </div>
+    <div class="sb">
+      <div class="vt">
+        <button class="vb active" id="btn-bar" onclick="setViz('bar')" title="Show results as a bar chart">Bar</button>
+        <button class="vb" id="btn-donut" onclick="setViz('donut')" title="Show results as a semi-circle chart">Semi Circle</button>
+        <button class="vb" id="btn-district" onclick="setViz('district')" title="Show results broken down by district">By District</button>
+      </div>
+      <div id="bar-view">
+        <div style="position:relative;margin-bottom:6px;margin-top:4px">
+          <div class="mlbl">65</div>
+          <div class="pw" id="pbar"><div class="mline"></div><div class="plab" id="plab">0 seats</div></div>
+        </div>
+      </div>
+      <div id="donut-view" style="display:none;flex-direction:column;align-items:center">
+        <div id="dw">
+          <svg id="donut-svg" width="220" height="122" viewBox="0 0 220 122"></svg>
+          <div id="dc"><div id="dt">0</div><div id="ds">seats</div></div>
+        </div>
+      </div>
+      <div id="district-view" style="display:none">
+        <div class="dist-results-list" id="district-results"></div>
+      </div>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -3434,6 +3451,7 @@ m128 92 c7 -7 12 -25 12 -40 0 -31 -28 -48 -76 -48 -22 0 -24 4 -24 50 l0 50
 
 <!-- Year badge overlay on map -->
 <div id="map-year-badge"></div>
+<div id="erase-mode-badge"><span class="erase-dot"></span>Erase mode — click a seat to clear it</div>
 
 <!-- Previous Results Modal -->
 <div id="prev-modal-overlay" onclick="closePrevResults()"></div>
@@ -4840,6 +4858,7 @@ let editingPartyId=null;
 function selectParty(id){
   selParty=id;eraseMode=false;
   document.getElementById('erase-btn').classList.remove('active');
+  document.getElementById('erase-mode-badge').classList.remove('show');
   document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
   const b=document.getElementById('pbtn-'+id);if(b)b.classList.add('active');
   // Show edit form for selected party
@@ -5201,6 +5220,7 @@ function drawLegend(cnt){
 function toggleErase(){
   eraseMode=!eraseMode;
   document.getElementById('erase-btn').classList.toggle('active',eraseMode);
+  document.getElementById('erase-mode-badge').classList.toggle('show',eraseMode);
   if(eraseMode){selParty=null;document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));document.getElementById('edit-party-form').style.display='none';}
   else{selParty=PARTIES[0].id;selectParty(selParty);}
 }
@@ -5460,19 +5480,13 @@ function applyT(){
   const area=document.getElementById('map-area');
   const aw=area.clientWidth,ah=area.clientHeight;
   const mapW=3336*sc,mapH=3166*sc;
-  // Clamp: map must always cover the viewport — never show empty space beyond the map edges.
-  // px can range from (aw - mapW) [map right edge at viewport right] to 0 [map left edge at viewport left]
-  // But if mapW < aw (zoomed out), center it instead of clamping one-sided.
-  if(mapW>=aw){
-    px=Math.min(0, Math.max(aw-mapW, px));
-  } else {
-    px=Math.max(0, Math.min(aw-mapW, px));
-  }
-  if(mapH>=ah){
-    py=Math.min(0, Math.max(ah-mapH, py));
-  } else {
-    py=Math.max(0, Math.min(ah-mapH, py));
-  }
+  // Allow extra empty space beyond the map edges: 10% of viewport width (left/right),
+  // 20% of viewport height (top/bottom).
+  const marginX=aw*0.10, marginY=ah*0.20;
+  const pxMin=Math.min(0, aw-mapW)-marginX, pxMax=Math.max(0, aw-mapW)+marginX;
+  const pyMin=Math.min(0, ah-mapH)-marginY, pyMax=Math.max(0, ah-mapH)+marginY;
+  px=Math.max(pxMin, Math.min(pxMax, px));
+  py=Math.max(pyMin, Math.min(pyMax, py));
   document.getElementById('pan-layer').style.transform=`translate(${px}px,${py}px) scale(${sc})`;
 }
 window.addEventListener('resize',()=>zoom(0));
