@@ -70,7 +70,7 @@ header h1{font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--accent
 .sidebar.collapsed{width:0;opacity:0;pointer-events:none}
 
 /* ─── RESULTS PANEL (separate, left of map) ─── */
-.results-panel{width:240px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;flex-shrink:0}
+.results-panel{width:300px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;flex-shrink:0}
 .results-panel .sb{border-bottom:none}
 .results-panel-title{padding:10px 12px 8px;border-bottom:1px solid var(--border);flex-shrink:0;position:sticky;top:0;background:var(--panel);z-index:5}
 .results-panel-title h2{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
@@ -94,14 +94,14 @@ header h1{font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--accent
 .vb{flex:1;padding:4px;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:transparent;font-family:'Syne',sans-serif;font-size:10px;color:var(--muted);transition:all .15s}
 .vb:hover{background:var(--input-hover);color:var(--text)}
 .vb.active{background:var(--input-hover);color:var(--text);border-color:var(--accent)}
-.pw{background:var(--bar-bg);border-radius:4px;overflow:hidden;height:30px;display:flex;position:relative}
-.pseg{height:100%;transition:width .3s}.plab{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;color:var(--plab-color);font-weight:700;pointer-events:none}
+.pw{background:var(--bar-bg);border-radius:4px;overflow:hidden;height:45px;display:flex;position:relative}
+.pseg{height:100%;transition:width .3s}.plab{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;color:var(--plab-color);font-weight:700;pointer-events:none}
 .mline{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--mline-color);z-index:10;pointer-events:none}
 .mlbl{position:absolute;left:50%;transform:translateX(-50%);top:-13px;font-size:8px;color:var(--muted);white-space:nowrap}
 #dw{position:relative;display:flex;align-items:center;justify-content:center;padding:8px 0 4px}
 #dc{position:absolute;text-align:center;pointer-events:none;top:50%;left:50%;transform:translate(-50%,-58%)}
-#dt{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--text)}
-#ds{font-size:8px;color:var(--muted)}
+#dt{font-family:'Space Mono',monospace;font-size:27px;font-weight:700;color:var(--text)}
+#ds{font-size:10px;color:var(--muted)}
 .ll{display:flex;flex-direction:column;gap:4px}
 .lr{display:flex;align-items:center;gap:6px}.ld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 .lname{font-size:11px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
@@ -290,6 +290,25 @@ button[title]{cursor:pointer}
 .prev-sum-bar{height:100%;border-radius:3px}
 .prev-sum-val{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);min-width:24px;text-align:right}
 #map-year-badge{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0d1117;font-family:"Space Mono",monospace;font-size:12px;font-weight:700;padding:7px 18px;border-radius:20px;z-index:500;pointer-events:none;display:none;box-shadow:0 4px 20px rgba(0,0,0,.4);letter-spacing:.04em}
+
+/* ─── PARTY DETAIL POPUP (results panel) ─── */
+.pseg,.donut-seg{cursor:pointer}
+#party-detail{display:none;margin-top:10px;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;animation:pdFadeIn .15s ease-out}
+#party-detail.show{display:block}
+@keyframes pdFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.pd-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.pd-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.pd-name{font-size:13px;font-weight:700;color:var(--text);flex:1}
+.pd-count{font-family:"Space Mono",monospace;font-size:14px;font-weight:700;color:var(--accent)}
+.pd-section-label{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:8px 0 4px}
+.pd-section-label:first-of-type{margin-top:0}
+.pd-dist-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:2px 0;font-size:11px}
+.pd-dist-name{color:var(--text);flex:1}
+.pd-dist-count{font-family:"Space Mono",monospace;color:var(--muted)}
+.pd-sect-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:2px 0;font-size:11px}
+.pd-sect-name{color:var(--text)}
+.pd-sect-count{font-family:"Space Mono",monospace;color:var(--muted)}
+.pd-empty{font-size:11px;color:var(--muted);padding:4px 0}
 </style>
 </head>
 <body>
@@ -316,7 +335,6 @@ button[title]{cursor:pointer}
     <button class="bsm" onclick="zoom(-0.18)" title="Zoom out">&#8722;</button>
     <button class="bsm" onclick="zoom(0)" title="Reset to default view">&#10227;</button>
     <button class="bsm" onclick="zoom(0.18)" title="Zoom in">&#43;</button>
-    <span class="tally" id="tally">0 / 128 seats filled</span>
     <button class="bsm" id="erase-btn" onclick="toggleErase()" title="Toggle erase mode — click seats to unassign them">&#10005; Erase mode</button>
     <button class="bsm red" onclick="clearAll()" title="Clear all seat assignments">Clear all</button>
     <button class="bsm" onclick="openExportDialog()" style="border-color:rgba(245,200,66,.4);color:var(--accent)" title="Export map as JPEG or PDF">Export</button>
@@ -3346,8 +3364,9 @@ m128 92 c7 -7 12 -25 12 -40 0 -31 -28 -48 -76 -48 -22 0 -24 4 -24 50 l0 50
   </div>
 
   <div class="results-panel" id="results-panel">
-    <div class="results-panel-title">
+    <div class="results-panel-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
       <h2>Results</h2>
+      <span class="tally" id="tally">0 / 128</span>
     </div>
     <div class="sb">
       <div class="vt">
@@ -3363,12 +3382,23 @@ m128 92 c7 -7 12 -25 12 -40 0 -31 -28 -48 -76 -48 -22 0 -24 4 -24 50 l0 50
       </div>
       <div id="donut-view" style="display:none;flex-direction:column;align-items:center">
         <div id="dw">
-          <svg id="donut-svg" width="220" height="122" viewBox="0 0 220 122"></svg>
+          <svg id="donut-svg" width="276" height="153" viewBox="0 0 220 122"></svg>
           <div id="dc"><div id="dt">0</div><div id="ds">seats</div></div>
         </div>
       </div>
       <div id="district-view" style="display:none">
         <div class="dist-results-list" id="district-results"></div>
+      </div>
+      <div id="party-detail">
+        <div class="pd-header">
+          <div class="pd-swatch" id="pd-swatch"></div>
+          <div class="pd-name" id="pd-name"></div>
+          <div class="pd-count" id="pd-count"></div>
+        </div>
+        <div class="pd-section-label">By District</div>
+        <div id="pd-districts"></div>
+        <div class="pd-section-label">By Sect</div>
+        <div id="pd-sects"></div>
       </div>
     </div>
   </div>
@@ -4871,6 +4901,26 @@ function selectParty(id){
     document.getElementById('edit-party-form').style.flexDirection='column';
   }
 }
+
+// Deselect the currently selected party (stop assigning) when clicking elsewhere
+function deselectParty(){
+  if(selParty===null)return;
+  selParty=null;
+  document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
+  editingPartyId=null;
+  document.getElementById('edit-party-form').style.display='none';
+}
+
+document.addEventListener('click', e=>{
+  if(selParty===null)return;
+  // Keep selection if the click is on a party row, the edit form, erase button,
+  // or any seat (seat clicks already stopPropagation, but guard anyway)
+  if(e.target.closest('.pb')) return;
+  if(e.target.closest('#edit-party-form')) return;
+  if(e.target.closest('#erase-btn')) return;
+  if(e.target.closest('.seat-hit')) return;
+  deselectParty();
+});
 function applyEditParty(){
   if(!editingPartyId)return;
   const p=PARTIES.find(x=>x.id===editingPartyId);if(!p)return;
@@ -4994,12 +5044,50 @@ function buildUI(){
     d.innerHTML=`<span class="ck-code">${code}</span><span class="ck-name">${name}</span>`;
     ck.appendChild(d);
   });
-  // Populate district dropdown
+  // Populate district dropdown — with geographic sub-area names, and North II split
+  // into Tripoli / Minnieh / Dennieh
   const sel=document.getElementById('assign-dist-select');
+  const NORTH2_MINNIEH = ['s7'];          // 1 SU seat
+  const NORTH2_DENNIEH = ['s8','s9'];     // 2 SU seats
+  const north2AllIds = SEATS.filter(s=>s.district==='north2').map(s=>s.id);
+  const NORTH2_TRIPOLI = north2AllIds.filter(id=>!NORTH2_MINNIEH.includes(id) && !NORTH2_DENNIEH.includes(id));
+
+  // Geographic display-name suffixes for each map district id
+  const DISTRICT_GEO_NAMES = {
+    'beirut1':'Beirut I','beirut2':'Beirut II',
+    'north1':'North I - Akkar',
+    'north3':'North III - Zgharta, Koura, Bsharri & Batroun',
+    'ml1':'Mount Lebanon I - Jbeil & Kesserwan',
+    'ml2':'Mount Lebanon II - Metn',
+    'ml3':'Mount Lebanon III - Baabda',
+    'ml4':'Mount Lebanon IV - Aley & Chouf',
+    'south1':'South I - Saida & Jezzine',
+    'south2':'South II - Zahrani & Tyre',
+    'south3':'South III - Nabatieh, Bint Jbeil & Marjeyoun-Hasbaya',
+    'bekaa1':'Bekaa I - Zahle',
+    'bekaa2':'Bekaa II - West Bekaa & Rashaya',
+    'bekaa3':'Bekaa III - Baalbek-Hermel'
+  };
+
+  // Build dropdown options. DISTRICT_OPTIONS maps option value → {name, seatIds}
+  window.DISTRICT_OPTIONS = {};
   const distMap={};
-  SEATS.forEach(s=>{if(!distMap[s.district])distMap[s.district]=s.dname;});
-  Object.entries(distMap).sort((a,b)=>a[1].localeCompare(b[1])).forEach(([id,name])=>{
-    const o=document.createElement('option');o.value=id;o.textContent=name;sel.appendChild(o);
+  SEATS.forEach(s=>{if(!distMap[s.district])distMap[s.district]={dname:s.dname,ids:[]};distMap[s.district].ids.push(s.id);});
+  const optionList = [];
+  Object.entries(distMap).forEach(([did,info])=>{
+    if(did==='north2'){
+      optionList.push(['north2_tripoli','North II - Tripoli',NORTH2_TRIPOLI]);
+      optionList.push(['north2_minnieh','North II - Minnieh',NORTH2_MINNIEH]);
+      optionList.push(['north2_dennieh','North II - Dennieh',NORTH2_DENNIEH]);
+    } else {
+      const name = DISTRICT_GEO_NAMES[did] || info.dname;
+      optionList.push([did,name,info.ids]);
+    }
+  });
+  optionList.sort((a,b)=>a[1].localeCompare(b[1]));
+  optionList.forEach(([val,name,ids])=>{
+    window.DISTRICT_OPTIONS[val]={name,ids};
+    const o=document.createElement('option');o.value=val;o.textContent=name;sel.appendChild(o);
   });
 }
 
@@ -5161,10 +5249,14 @@ function updateOverlay(did){
 function updateResults(){
   const cnt={};PARTIES.forEach(p=>cnt[p.id]=0);let filled=0;
   SEATS.forEach(s=>{if(st[s.id]){cnt[st[s.id]]++;filled++;}});
-  document.getElementById('tally').textContent=filled+' / 128 seats filled';
+  document.getElementById('tally').textContent=filled+' / 128';
   drawBar(cnt,filled);drawDonut(cnt,filled);
   rebuildPartyList(); // always rebuild — handles counts + re-sort when in seats mode
   if(document.getElementById('district-view').style.display!=='none')drawDistrictResults();
+  if(selectedDetailParty) showPartyDetailRefresh();
+}
+function showPartyDetailRefresh(){
+  const pid=selectedDetailParty;selectedDetailParty=null;showPartyDetail(pid);
 }
 
 function drawBar(cnt,filled){
@@ -5175,7 +5267,10 @@ function drawBar(cnt,filled){
     if(!cnt[p.id])return;
     const s=document.createElement('div');s.className='pseg';
     s.style.width=(cnt[p.id]/128*100)+'%';s.style.background=p.color;
-    s.title=p.name+': '+cnt[p.id];bar.insertBefore(s,ml);
+    s.title=p.name+': '+cnt[p.id];
+    s.dataset.partyId=p.id;
+    s.onclick=(e)=>{e.stopPropagation();showPartyDetail(p.id);};
+    bar.insertBefore(s,ml);
   });
   lbl.textContent=filled?filled+'/128':'0 seats';
 }
@@ -5184,20 +5279,25 @@ function drawDonut(cnt,filled){
   const svg=document.getElementById('donut-svg');svg.innerHTML='';
   document.getElementById('dt').textContent=filled;
   const cx=110,cy=110,r=95,ir=62,tot=128;let a=-Math.PI;
-  const be=mn('path');be.setAttribute('d',ap(cx,cy,r,ir,-Math.PI,0));be.setAttribute('fill','#1e2535');svg.appendChild(be);
+  const be=mn('path');be.setAttribute('d',ap(cx,cy,r,ir,-Math.PI,0));be.setAttribute('fill','var(--bar-bg)');svg.appendChild(be);
   PARTIES.forEach(p=>{
     if(!cnt[p.id])return;const sw=(cnt[p.id]/tot)*Math.PI;if(sw<=0)return;
-    const ea=a+sw;const el=mn('path');el.setAttribute('d',ap(cx,cy,r,ir,a,ea));el.setAttribute('fill',p.color);svg.appendChild(el);a=ea;
+    const ea=a+sw;const el=mn('path');el.setAttribute('d',ap(cx,cy,r,ir,a,ea));el.setAttribute('fill',p.color);
+    el.style.cursor='pointer';el.dataset.partyId=p.id;
+    el.addEventListener('click',(e)=>{e.stopPropagation();showPartyDetail(p.id);});
+    const titleEl=mn('title');titleEl.textContent=p.name+': '+cnt[p.id];el.appendChild(titleEl);
+    svg.appendChild(el);a=ea;
   });
   const ma=-Math.PI+(65/128)*Math.PI;
   const ln=mn('line');
   ln.setAttribute('x1',cx+(ir-4)*Math.cos(ma));ln.setAttribute('y1',cy+(ir-4)*Math.sin(ma));
   ln.setAttribute('x2',cx+(r+4)*Math.cos(ma));ln.setAttribute('y2',cy+(r+4)*Math.sin(ma));
   ln.setAttribute('stroke','rgba(255,255,255,.7)');ln.setAttribute('stroke-width','2');svg.appendChild(ln);
-  // seats label in center of semi-circle arc
+  // seats label in center of semi-circle arc (scaled to match SVG render size 276/220)
   const labelY=cy-10;
   const dc=document.getElementById('dc');
-  if(dc){dc.style.top=(labelY-18)+'px';dc.style.left='50%';dc.style.transform='translateX(-50%)';}
+  const donutScale=276/220;
+  if(dc){dc.style.top=((labelY-18)*donutScale)+'px';dc.style.left='50%';dc.style.transform='translateX(-50%)';}
 }
 
 function ap(cx,cy,r,ir,s,e){
@@ -5309,6 +5409,63 @@ function drawDistrictResults(){
   if(!container.children.length)container.innerHTML='<div style="font-size:11px;color:var(--muted);padding:4px">No seats assigned yet</div>';
 }
 
+// ─── PARTY DETAIL POPUP ───
+const CONFESSION_NAMES = {
+  'AC':'Armenian Catholic','AO':'Armenian Orthodox','EV':'Evangelical/Protestant',
+  'GO':'Greek Orthodox','GC':'Greek Catholic','MA':'Maronite','MI':'Christian Minority',
+  'SU':'Sunni Muslim','SH':'Shia Muslim','DR':'Druze','AL':'Alawite'
+};
+let selectedDetailParty=null;
+
+function showPartyDetail(pid){
+  const p=PARTIES.find(x=>x.id===pid);if(!p)return;
+  if(selectedDetailParty===pid){ hidePartyDetail(); return; }
+  selectedDetailParty=pid;
+
+  // Gather seats for this party
+  const seats=SEATS.filter(s=>st[s.id]===pid);
+  const total=seats.length;
+
+  // Group by district
+  const distCnt={};
+  seats.forEach(s=>{ distCnt[s.dname]=(distCnt[s.dname]||0)+1; });
+
+  // Group by confession
+  const sectCnt={};
+  seats.forEach(s=>{ sectCnt[s.confession]=(sectCnt[s.confession]||0)+1; });
+
+  document.getElementById('pd-swatch').style.background=p.color;
+  document.getElementById('pd-name').textContent=p.name;
+  document.getElementById('pd-count').textContent=total+' seat'+(total!==1?'s':'');
+
+  const distEl=document.getElementById('pd-districts');
+  const sortedDists=Object.entries(distCnt).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  distEl.innerHTML = sortedDists.length
+    ? sortedDists.map(([name,n])=>`<div class="pd-dist-row"><span class="pd-dist-name">${name}</span><span class="pd-dist-count">${n}</span></div>`).join('')
+    : '<div class="pd-empty">No seats won</div>';
+
+  const sectEl=document.getElementById('pd-sects');
+  const sortedSects=Object.entries(sectCnt).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  sectEl.innerHTML = sortedSects.length
+    ? sortedSects.map(([code,n])=>`<div class="pd-sect-row"><span class="pd-sect-name">${CONFESSION_NAMES[code]||code} (${code})</span><span class="pd-sect-count">${n}</span></div>`).join('')
+    : '<div class="pd-empty">No seats won</div>';
+
+  document.getElementById('party-detail').classList.add('show');
+}
+
+function hidePartyDetail(){
+  selectedDetailParty=null;
+  document.getElementById('party-detail').classList.remove('show');
+}
+
+// Click anywhere outside the detail panel and the bar/donut to deselect
+document.addEventListener('click', e=>{
+  if(!selectedDetailParty) return;
+  const inDetail = e.target.closest('#party-detail');
+  const inSeg = e.target.closest('.pseg') || (e.target.tagName==='path' && e.target.closest('#donut-svg'));
+  if(!inDetail && !inSeg) hidePartyDetail();
+});
+
 // Assign by district overlay
 let adbSelectedSeat=null;
 let adbDistSeats=[];
@@ -5316,10 +5473,11 @@ let adbDistSeats=[];
 function openAssignDistrict(){
   const sel=document.getElementById('assign-dist-select');
   const did=sel.value;if(!did)return;
-  adbDistSeats=SEATS.filter(s=>s.district===did);
+  const opt=window.DISTRICT_OPTIONS[did];
+  if(!opt)return;
+  adbDistSeats = opt.ids.map(id=>SEATS.find(s=>s.id===id)).filter(Boolean);
   if(!adbDistSeats.length)return;
-  const dname=adbDistSeats[0].dname;
-  document.getElementById('adb-title').textContent=dname;
+  document.getElementById('adb-title').textContent=opt.name;
   document.getElementById('adb-subtitle').textContent=adbDistSeats.length+' seats — select a seat, then choose a party';
   adbSelectedSeat=adbDistSeats[0].id; // auto-select first seat
   adbRebuildSeatList();
@@ -5480,10 +5638,10 @@ function applyT(){
   const area=document.getElementById('map-area');
   const aw=area.clientWidth,ah=area.clientHeight;
   const mapW=3336*sc,mapH=3166*sc;
-  // Allow extra empty space beyond the map edges: 10% of viewport width (left/right),
-  // 20% of viewport height (top/bottom).
-  const marginX=aw*0.10, marginY=ah*0.20;
-  const pxMin=Math.min(0, aw-mapW)-marginX, pxMax=Math.max(0, aw-mapW)+marginX;
+  // Allow extra empty space beyond the map edges: 20% of viewport width on both
+  // left and right, and 20% of viewport height (top/bottom).
+  const marginXLeft=aw*0.20, marginXRight=aw*0.20, marginY=ah*0.20;
+  const pxMin=Math.min(0, aw-mapW)-marginXRight, pxMax=Math.max(0, aw-mapW)+marginXLeft;
   const pyMin=Math.min(0, ah-mapH)-marginY, pyMax=Math.max(0, ah-mapH)+marginY;
   px=Math.max(pxMin, Math.min(pxMax, px));
   py=Math.max(pyMin, Math.min(pyMax, py));
