@@ -5492,7 +5492,8 @@ document.addEventListener('click', e=>{
   if(_mouseDidPan) return; // user was panning, not clicking
   const inDetail = e.target.closest('#party-detail');
   const inSeg = e.target.closest('.pseg') || (e.target.tagName==='path' && e.target.closest('#donut-svg'));
-  if(!inDetail && !inSeg) hidePartyDetail();
+  const inPartyRow = e.target.closest('.pb'); // selecting a party shouldn't close the detail
+  if(!inDetail && !inSeg && !inPartyRow) hidePartyDetail();
 });
 
 // Assign by district overlay
