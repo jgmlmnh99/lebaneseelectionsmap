@@ -5489,6 +5489,7 @@ function hidePartyDetail(){
 // Click anywhere outside the detail panel and the bar/donut to deselect
 document.addEventListener('click', e=>{
   if(!selectedDetailParty) return;
+  if(_mouseDidPan) return; // user was panning, not clicking
   const inDetail = e.target.closest('#party-detail');
   const inSeg = e.target.closest('.pseg') || (e.target.tagName==='path' && e.target.closest('#donut-svg'));
   if(!inDetail && !inSeg) hidePartyDetail();
